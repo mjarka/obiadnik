@@ -3,8 +3,8 @@ import Container from "@material-ui/core/Container";
 import Appbar from "./Appbar";
 import Products from "./Products";
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
+// import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Link } from "react-router-dom";
 import Recipes from "./Recipes";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
@@ -16,7 +16,7 @@ export default function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Router basename={process.env.PUBLIC_URL}>
+        <HashRouter basename="/">
           <Container maxWidth="md" disableGutters="true">
             <Paper elevation={3}>
               <Appbar />
@@ -37,7 +37,7 @@ export default function App() {
               </Switch>
             </Paper>
           </Container>
-        </Router>
+        </HashRouter>
       </ThemeProvider>
     </>
   );
