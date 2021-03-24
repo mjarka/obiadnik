@@ -21,7 +21,7 @@ export default function App() {
             <Paper elevation={3}>
               <Appbar />
               <Switch>
-                <Route path="/">
+                <Route path="/products">
                   <Products />
                 </Route>
 
