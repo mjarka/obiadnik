@@ -4,7 +4,6 @@ import Appbar from "./Appbar";
 import Products from "./Products";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Categories from "./Categories";
 import Recipes from "./Recipes";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";

@@ -5,12 +5,10 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import { Link as RouterLink } from "react-router-dom";
 
 // appbar icons
 import MenuBookIcon from "@material-ui/icons/MenuBook";
-import CategoryIcon from "@material-ui/icons/Category";
 import FastfoodIcon from "@material-ui/icons/Fastfood";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import DateRangeIcon from "@material-ui/icons/DateRange";

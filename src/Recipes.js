@@ -43,17 +43,6 @@ export default function Recipes() {
   const handleDelete = () => {};
 
   //
-  // Temp products reformatting for DB purpose
-  //
-  const productsIdArray = tempProducts.map((item) => {
-    const productsQuantity = {};
-    const container = {};
-    container.id = item.id;
-    productsQuantity.product = container;
-    return productsQuantity;
-  });
-
-  //
   // HANDLERS
   //
   //
@@ -96,6 +85,17 @@ export default function Recipes() {
   // Post entry to database
   //
   const handleSubmit = () => {
+    //
+    // Temp products reformatting for DB purpose
+    //
+    const productsIdArray = tempProducts.map((item) => {
+      const productsQuantity = {};
+      const container = {};
+      container.id = item.id;
+      productsQuantity.product = container;
+      return productsQuantity;
+    });
+
     const name = recipe.recipeName;
     const Recipe = recipe.recipeDescription;
     const productsQuantity = productsIdArray;

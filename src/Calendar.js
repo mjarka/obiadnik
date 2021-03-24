@@ -76,13 +76,13 @@ export default function Calendar() {
     <Container>
       Zaznacz przepisy do kupienia
       <Grid container spacing={3} className={classes.divider}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={12}>
           {/* Recipes CHIPS */}
           {recipes.map((recipe) => (
             <Chip
               key={recipe.id}
               label={recipe.name}
-              color={recipe.isSelected ? "" : "secondary"}
+              color={recipe.isSelected ? "secondary" : ""}
               onClick={() => handleRecipeChip(recipe)}
             />
           ))}

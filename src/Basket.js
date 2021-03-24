@@ -8,6 +8,7 @@ export default function Basket() {
   // States
   //
   const [recipes, setRecipes] = useState([]);
+  const [products, setProducts] = useState([]);
   //
   // fetch
   //
@@ -17,26 +18,36 @@ export default function Basket() {
         .get(StrapiAdress + "/recipes?isSelected=true")
         .then(function (res) {
           setRecipes(res.data);
-          console.log(res.data);
         })
         .catch(function (error) {
           console.log(error);
         });
     }
+
     fetchMyAPI();
   }, []);
-  console.log(recipes);
 
-  const recipesProducts = recipes.map((recipe) =>
-    recipe.productsQuantity.map((product) => product.product)
-  );
+  useEffect(() => {
+    setProducts(
+      recipes.flatMap((recipe) =>
+        recipe.productsQuantity.flatMap((item) => item)
+      )
+    );
+  }, [recipes]);
 
-  console.log(recipesProducts);
+  console.log(products);
   return (
     <Container>
       Produkty do kupienia
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={4}></Grid>
+        <Grid item xs={12} sm={12}>
+          {/* PRODUCTS CHIPS */}
+
+          {products.map((product) => (
+            <Chip key={product.id} label={product.product.name} />
+          ))}
+          {/* PRODUCTS CHIPS */}
+        </Grid>
       </Grid>
     </Container>
   );
