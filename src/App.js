@@ -16,7 +16,7 @@ export default function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Router basename={process.env.PUBLIC_URL>
+        <Router basename={process.env.PUBLIC_URL}>
           <Container maxWidth="md" disableGutters="true">
             <Paper elevation={3}>
               <Appbar />
