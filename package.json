@@ -1,6 +1,6 @@
 {
   "name": "obiadnik_react",
-  "homepage": "https://github.com/mjarka/obiadnik",
+  "homepage": "https://mjarka.github.io/obiadnik",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -44,6 +44,6 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^2.0.1"
+    "gh-pages": "^2.2.0"
   }
 }
