@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Recipes from "./Recipes";
 import { ThemeProvider } from "@material-ui/core/styles";
-import { Paper } from "@material-ui/core";
+import { CssBaseline, Paper } from "@material-ui/core";
 import theme from "./Theme";
 import Calendar from "./Calendar";
 import Basket from "./Basket";
@@ -16,6 +16,7 @@ export default function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Router basename={process.env.PUBLIC_URL}>
           <Container maxWidth="md" disableGutters="true">
             <Paper elevation={3}>

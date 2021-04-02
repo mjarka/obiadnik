@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, TextField } from "@material-ui/core";
+import { Chip, Container, TextField } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,7 +7,6 @@ import axios from "axios";
 import EditIcon from "@material-ui/icons/Edit";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
-import ProductChip from "./ProductChip";
 import StrapiAdress from "./StrapiAdress";
 export default function Products() {
   //
@@ -84,11 +83,9 @@ export default function Products() {
   const handleCategoryIdChange = (id, color) => {
     setCategoryId(id);
     setCategoryColor(color);
-    console.log(color);
   };
   const handleUnitIdChange = (event) => {
     setUnitId(event);
-    console.log(event);
   };
   const handleUnitChange = (event) => {
     setUnitName(event.target.value);
@@ -115,8 +112,8 @@ export default function Products() {
     const unit = unitId;
     const category = categoryId;
     // check if name is already in database
+    // put to database if already exist
     if (products.some((e) => e.name === name)) {
-      console.log(true);
       console.log("już mam takie coś");
       axios
         .put(StrapiAdress + "/products/" + productId, { name, category, unit })
@@ -124,7 +121,9 @@ export default function Products() {
           console.log(res);
           console.log(res.data);
         });
-    } else {
+    }
+    // post to database if this is new entry
+    else {
       axios
         .post(StrapiAdress + "/products", { name, category, unit })
         .then((res) => {
@@ -133,12 +132,11 @@ export default function Products() {
         });
       // Update chips after SAVE is clicked
       setProducts((prevState) => [
-        ...products,
+        ...prevState,
         { name, category: { color: categoryColor } },
       ]);
     }
   };
-  console.log(productId);
   return (
     <Container>
       <Grid container spacing={3} className={classes.divider}>
@@ -211,8 +209,9 @@ export default function Products() {
       {/* PRODUCTS CHIPS */}
 
       {products.map((product) => (
-        <ProductChip
-          color={product.category.color}
+        <Chip
+          className={classes.chip}
+          color={"primary"}
           key={product.id}
           label={product.name}
           onDelete={handleDelete}

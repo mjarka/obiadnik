@@ -1,10 +1,12 @@
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import axios from "axios";
 
 const theme = createMuiTheme({
   palette: {
+    background: {
+      default: "#F7F5F3",
+    },
     primary: {
-      main: "#682D63",
+      main: "#604D53",
     },
   },
 });

@@ -64,7 +64,6 @@ export default function Recipes() {
         .get(StrapiAdress + "/recipes")
         .then(function (res) {
           setRecipes(res.data);
-          console.log(res.data);
         })
         .catch(function (error) {
           console.log(error);
@@ -82,6 +81,50 @@ export default function Recipes() {
   }, []);
 
   //
+  // Change values for  temp products
+  //
+  const handleProductValue = (product, e) => {
+    console.log(e.target.value, product);
+
+    // 1. Make a shallow copy of the tempProducts
+    let tempProductsCopy = [...tempProducts];
+    // 2. Make a shallow copy of the item you want to mutate
+    let tempProductCopy = {
+      ...tempProductsCopy[tempProducts.indexOf(product)],
+    };
+    // 3. Replace the property you're intested in
+    tempProductCopy.value = e.target.value;
+
+    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+    tempProductsCopy[tempProducts.indexOf(product)] = tempProductCopy;
+    // 5. Set the state to our new copy
+
+    setTempProducts(tempProductsCopy);
+  };
+
+  //
+  // Display recipe when chip is clicked
+  //
+  const handleDisplayRecipe = (recipe) => {
+    setRecipe({
+      ...recipe,
+      recipeName: recipe.name,
+      recipeDescription: recipe.Recipe,
+    });
+    // array of  products ID's from recipe
+    const idArray = recipe.productsQuantity.map((quantity) => {
+      return quantity.product.id;
+    });
+
+    // filter products based on recipe products ID's
+    const filteredProducts = products.filter((product) =>
+      idArray.includes(product.id)
+    );
+
+    setTempProducts(filteredProducts);
+    console.log(recipe);
+  };
+  //
   // Post entry to database
   //
   const handleSubmit = () => {
@@ -90,15 +133,15 @@ export default function Recipes() {
     //
     const productsIdArray = tempProducts.map((item) => {
       const productsQuantity = {};
-      const container = {};
-      container.id = item.id;
-      productsQuantity.product = container;
+      productsQuantity.product = item.id;
+      productsQuantity.value = item.value;
       return productsQuantity;
     });
 
     const name = recipe.recipeName;
     const Recipe = recipe.recipeDescription;
     const productsQuantity = productsIdArray;
+
     axios
       .post(StrapiAdress + "/recipes", {
         name,
@@ -110,6 +153,7 @@ export default function Recipes() {
         console.log(res.data);
       });
   };
+
   console.log(tempProducts);
   return (
     <Container>
@@ -131,7 +175,7 @@ export default function Recipes() {
               id="recipeDescription"
               label="Przepis"
               multiline
-              rows={4}
+              rowsMax={14}
               value={recipe.recipeDescription}
               onChange={handleRecipe}
               fullWidth
@@ -176,10 +220,13 @@ export default function Recipes() {
             {tempProducts.map((product) => (
               <Grid item xs={6}>
                 <TextField
+                  key={product.id}
                   label={product.name}
                   id="standard-size-small"
                   size="small"
                   helperText={product.unit.name}
+                  value={product.value}
+                  onChange={(e) => handleProductValue(product, e)}
                 />
               </Grid>
             ))}
@@ -190,7 +237,14 @@ export default function Recipes() {
       <Grid container className={classes.divider} spacing={3}>
         <Grid item xs={12} sm={12}>
           {recipes.map((recipe) => (
-            <Chip key={recipe.id} label={recipe.name} onDelete={handleDelete} />
+            <Chip
+              className={classes.chip}
+              key={recipe.id}
+              label={recipe.name}
+              color="primary"
+              onDelete={handleDelete}
+              onClick={() => handleDisplayRecipe(recipe)}
+            />
           ))}
         </Grid>
       </Grid>

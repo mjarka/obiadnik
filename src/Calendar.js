@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Chip, Container, Grid, TextField } from "@material-ui/core";
+import { Chip, Container, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import StrapiAdress from "./StrapiAdress";
@@ -16,6 +16,9 @@ export default function Calendar() {
     chip: {
       marginRight: theme.spacing(1),
       marginBottom: theme.spacing(1),
+    },
+    section: {
+      margin: theme.spacing(3, 1, 1),
     },
   }));
   const classes = useStyles();
@@ -51,22 +54,27 @@ export default function Calendar() {
     const index = recipes.indexOf(recipe);
     console.log(index);
     // 1. Make a shallow copy of the items
-    let items = [...recipes];
+    let tempRecipes = [...recipes];
     // 2. Make a shallow copy of the item you want to mutate
-    let item = { ...items[index] };
+    let tempRecipe = { ...tempRecipes[index] };
     // 3. Replace the property you're intested in
-    item.isSelected = !item.isSelected;
+
+    if (tempRecipe.isSelected === true) {
+      tempRecipe.productsQuantity.map((product) => (product.isTaken = false));
+    }
+
+    tempRecipe.isSelected = !tempRecipe.isSelected;
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-    items[index] = item;
-    console.log(items);
+    tempRecipes[index] = tempRecipe;
+
     // 5. Set the state to our new copy
-    setRecipes(items);
+    setRecipes(tempRecipes);
     console.log(recipes);
 
     // axios send to database
-    const isSelected = !!item.isSelected;
+
     axios
-      .put(StrapiAdress + "/recipes/" + recipe.id, { isSelected })
+      .put(StrapiAdress + "/recipes/" + recipe.id, tempRecipe)
       .then((response) => {
         console.log(response);
       });
@@ -74,15 +82,19 @@ export default function Calendar() {
 
   return (
     <Container>
-      Zaznacz przepisy do kupienia
+      <Typography variant="h5" gutterBottom className={classes.section}>
+        Zaznacz przepisy do kupienia
+      </Typography>
+
       <Grid container spacing={3} className={classes.divider}>
         <Grid item xs={12} sm={12}>
           {/* Recipes CHIPS */}
           {recipes.map((recipe) => (
             <Chip
+              className={classes.chip}
               key={recipe.id}
               label={recipe.name}
-              color={recipe.isSelected ? "secondary" : ""}
+              color={recipe.isSelected ? "primary" : ""}
               onClick={() => handleRecipeChip(recipe)}
             />
           ))}
