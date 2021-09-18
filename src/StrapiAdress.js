@@ -1,2 +1,2 @@
-const strapiAdress = "http://localhost:1337";
+const strapiAdress = "https://obiadnik.herokuapp.com/";
 export default strapiAdress;
