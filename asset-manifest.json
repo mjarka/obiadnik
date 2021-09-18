@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/obiadnik/static/css/main.9d5b29c0.chunk.css",
-    "main.js": "/obiadnik/static/js/main.279e81fb.chunk.js",
-    "main.js.map": "/obiadnik/static/js/main.279e81fb.chunk.js.map",
+    "main.js": "/obiadnik/static/js/main.76598e7b.chunk.js",
+    "main.js.map": "/obiadnik/static/js/main.76598e7b.chunk.js.map",
     "runtime-main.js": "/obiadnik/static/js/runtime-main.99dfe1ec.js",
     "runtime-main.js.map": "/obiadnik/static/js/runtime-main.99dfe1ec.js.map",
     "static/css/2.33090d8b.chunk.css": "/obiadnik/static/css/2.33090d8b.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.33090d8b.chunk.css",
     "static/js/2.6f23e347.chunk.js",
     "static/css/main.9d5b29c0.chunk.css",
-    "static/js/main.279e81fb.chunk.js"
+    "static/js/main.76598e7b.chunk.js"
   ]
 }
