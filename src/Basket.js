@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Container,
-  Grid,
-  ListItemIcon,
-  Typography,
-} from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import { Button, Container, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import axios from "axios";
-import StrapiAdress from "./StrapiAdress";
+
 import BasketRecipes from "./BasketRecipes";
 import BasketCategories from "./BasketCategories";
+import * as Constants from "./constants";
+import { useQuery, useMutation } from "@apollo/client";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -23,10 +18,8 @@ export default function Basket() {
   //
   // States
   //
-  const [recipes, setRecipes] = useState([]);
   const [units, setUnits] = useState([]);
-  const [isCategoryView, setIscategoryView] = useState(true);
-  const [isFetched, setIsFetched] = useState(false);
+  const [isCategoryView, setIscategoryView] = useState(false);
   //
   // Pass units to child component to display unit and value
   //
@@ -37,50 +30,54 @@ export default function Basket() {
   };
 
   //
-  // Pass sate changing function to child props
-  //
-  function handleRecipeChange(newValue) {
-    setRecipes(newValue);
-  }
-
-  //
   // fetch
   //
+  const { loading, error, data, refetch } = useQuery(Constants.productsQuery);
+  const [updateCheckbox] = useMutation(Constants.updateCheckbox);
   useEffect(() => {
-    async function fetchMyAPI() {
-      axios
-        .get(StrapiAdress + "/recipes?isSelected=true")
-        .then(function (res) {
-          setRecipes(res.data);
-          setIsFetched(true);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      axios
-        .get(StrapiAdress + "/units")
-        .then(function (res) {
-          setUnits(res.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-    fetchMyAPI();
+    refetch();
   }, []);
+  if (loading) return "Loading...";
+  if (error) return `Error! ${error}`;
+
+  //
+  // Pass sate changing function to child props
+  //
+  const handleRecipeChange = async (
+    productId,
+    recipeId,
+    isTaken,
+    recipeIndex,
+    productIndex
+  ) => {
+    // WORKING CATEGORIES FETCH
+    const changedProduct = { id: productId, isTaken: !isTaken };
+    const productsArray = data.recipes[recipeIndex].productsQuantity.map(
+      (product) => ({
+        id: product.id,
+        isTaken: product.isTaken,
+      })
+    );
+    productsArray[productIndex] = changedProduct;
+    await updateCheckbox({
+      variables: {
+        recipeId: recipeId,
+        productIds: productsArray,
+      },
+    });
+    await refetch();
+  };
 
   return (
     <Container>
       {/* Check if recipes is empty - print string */}
-      <Typography variant="h5" gutterBottom className={classes.section}>
-        {isFetched
-          ? !recipes.length
-            ? "Nie ma żadnych produktów - znaznacz przepisy w kalendarzu"
-            : "Produkty do kupienia"
-          : "Poczekaj chwilkę..."}
-      </Typography>
+      <Typography
+        variant="h5"
+        gutterBottom
+        className={classes.section}
+      ></Typography>
       <Button
-        color="secondary"
+        color="primary"
         variant="contained"
         onClick={() => setIscategoryView(!isCategoryView)}
       >
@@ -89,12 +86,15 @@ export default function Basket() {
       <Grid container spacing={3}>
         {isCategoryView ? (
           <BasketRecipes
-            recipes={recipes}
+            recipes={data.recipes}
             itemUnit={itemUnit}
             onChange={handleRecipeChange}
           />
         ) : (
-          <BasketCategories recipes={recipes} />
+          <BasketCategories
+            recipes={data.recipes}
+            onChange={handleRecipeChange}
+          />
         )}
       </Grid>
     </Container>

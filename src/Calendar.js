@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Chip, Container, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import axios from "axios";
-import StrapiAdress from "./StrapiAdress";
+
+import { useQuery, useMutation } from "@apollo/client";
+import * as Constants from "./constants";
 
 export default function Calendar() {
   //
@@ -26,58 +27,28 @@ export default function Calendar() {
   //
   // States
   //
-  const [recipes, setRecipes] = useState([]);
 
   //
   // fetch
   //
-  useEffect(() => {
-    async function fetchMyAPI() {
-      axios
-        .get(StrapiAdress + "/recipes")
-        .then(function (res) {
-          setRecipes(res.data);
-          console.log(res.data);
-        })
+  const { loading, error, data, refetch } = useQuery(Constants.calendar, {});
+  const [updateCalendar] = useMutation(Constants.updateCalendar);
 
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-    fetchMyAPI();
-  }, []);
+  if (loading) return "Loading...";
+  // if (error) return `Error! ${error}`;
 
   //
   // Handlers
   //
   const handleRecipeChip = (recipe) => {
-    const index = recipes.indexOf(recipe);
-    console.log(index);
-    // 1. Make a shallow copy of the items
-    let tempRecipes = [...recipes];
-    // 2. Make a shallow copy of the item you want to mutate
-    let tempRecipe = { ...tempRecipes[index] };
-    // 3. Replace the property you're intested in
-
-    if (tempRecipe.isSelected === true) {
-      tempRecipe.productsQuantity.map((product) => (product.isTaken = false));
-    }
-
-    tempRecipe.isSelected = !tempRecipe.isSelected;
-    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-    tempRecipes[index] = tempRecipe;
-
-    // 5. Set the state to our new copy
-    setRecipes(tempRecipes);
-    console.log(recipes);
-
-    // axios send to database
-
-    axios
-      .put(StrapiAdress + "/recipes/" + recipe.id, tempRecipe)
-      .then((response) => {
-        console.log(response);
-      });
+    console.log(recipe);
+    updateCalendar({
+      variables: {
+        recipeId: recipe.id,
+        isSelected: !recipe.isSelected,
+      },
+    });
+    // refetch();
   };
 
   return (
@@ -89,12 +60,13 @@ export default function Calendar() {
       <Grid container spacing={3} className={classes.divider}>
         <Grid item xs={12} sm={12}>
           {/* Recipes CHIPS */}
-          {recipes.map((recipe) => (
+          {data.recipes.map((recipe) => (
             <Chip
               className={classes.chip}
               key={recipe.id}
+              variant={recipe.isSelected ? "default" : "outlined"}
               label={recipe.name}
-              color={recipe.isSelected ? "primary" : ""}
+              color={recipe.isSelected ? "primary" : "default"}
               onClick={() => handleRecipeChip(recipe)}
             />
           ))}

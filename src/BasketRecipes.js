@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Checkbox,
   Grid,
@@ -8,35 +8,16 @@ import {
   ListItemText,
   ListSubheader,
 } from "@material-ui/core";
-import StrapiAdress from "./StrapiAdress";
-
-import axios from "axios";
 
 export default function BasketRecipes(props) {
-  const handleCheckbox = (index, id, recipe) => {
-    // 1. Make a shallow copy of the items
-    let tempRecipes = [...props.recipes];
-    // // 2. Make a shallow copy of the item you want to mutate
-    let tempRecipe = { ...tempRecipes[index] };
-    // // 3. Replace the property you're intested in
-    tempRecipe.productsQuantity[id].isTaken = !tempRecipe.productsQuantity[id]
-      .isTaken;
-    // // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-    tempRecipes[index] = tempRecipe;
-    // 5. Set the state to our new copy
+  const [recipesList, setRecipesList] = useState();
 
-    props.onChange(tempRecipes);
+  const handleCheckbox = (index, id, recipe) => {};
 
-    axios.put(StrapiAdress + "/recipes/" + recipe.id, recipe).then((res) => {
-      console.log(res);
-      console.log(res.data);
-    });
-  };
-
-  return (
-    <Grid item xs={12} sm={12}>
-      {props.recipes.map((recipe) => (
-        <>
+  useEffect(() => {
+    setRecipesList(
+      props.recipes.map((recipe) => (
+        <div key={recipe.id}>
           <List
             dense
             disablePadding={true}
@@ -52,10 +33,12 @@ export default function BasketRecipes(props) {
                   disableRipple
                   checked={item.isTaken}
                   onClick={() =>
-                    handleCheckbox(
+                    props.onChange(
+                      item.id,
+                      recipe.id,
+                      item.isTaken,
                       props.recipes.indexOf(recipe),
-                      recipe.productsQuantity.indexOf(item),
-                      recipe
+                      recipe.productsQuantity.indexOf(item)
                     )
                   }
                 />
@@ -63,12 +46,18 @@ export default function BasketRecipes(props) {
               <ListItemText
                 id={item.id}
                 primary={item.product.name}
-                secondary={item.value + " " + props.itemUnit(item.product.unit)}
+                secondary={item.value + " " + item.product.unit.name}
               />
             </ListItem>
           ))}
-        </>
-      ))}
+        </div>
+      ))
+    );
+  }, [props.recipes]);
+
+  return (
+    <Grid item xs={12} sm={12}>
+      {recipesList}
     </Grid>
   );
 }
